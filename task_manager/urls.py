@@ -16,12 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from tasks.apiViews import TaskListAPI, TaskViewSet
+from tasks.apiViews import TaskListAPI, TaskViewSet, TaskHistoryViewSet
 
 from rest_framework.routers import SimpleRouter
 
 router = SimpleRouter()
 router.register("api/tasks", TaskViewSet)
+router.register("api/task-history", TaskHistoryViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

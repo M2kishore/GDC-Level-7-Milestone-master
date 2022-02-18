@@ -23,3 +23,11 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TaskHistory(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=True)
+    update_time = models.DateTimeField(auto_now=True)
+    status = status = models.CharField(
+        max_length=100, choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0]
+    )
