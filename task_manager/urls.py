@@ -23,7 +23,6 @@ from rest_framework.routers import SimpleRouter
 router = SimpleRouter()
 router.register("api/tasks", TaskViewSet)
 router.register("api/task-history", TaskHistoryViewSet)
-
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("tasksapi/", TaskListAPI.as_view()),

@@ -54,6 +54,7 @@ class TaskHistorySerializer(ModelSerializer):
     class Meta:
         model = TaskHistory
         fields = ["task", "update_time", "status"]
+        read_only_fields = ["task", "update_time", "status"]
 
 
 class TaskFilter(FilterSet):
@@ -80,8 +81,6 @@ class TaskViewSet(ModelViewSet):
         return Task.objects.filter(user=self.request.user, deleted=False)
 
     def perform_create(self, serializer):
-        task = self.get_object()
-        TaskHistory.objects.create(task=task, status=task.status)
         serializer.save(user=self.request.user)
 
     def perform_update(self, serializer):
