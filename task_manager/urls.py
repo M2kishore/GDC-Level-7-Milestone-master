@@ -16,7 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from tasks.apiViews import TaskListAPI, TaskViewSet, TaskHistoryViewSet
+from tasks.apiViews import (
+    TaskListAPI,
+    TaskViewSet,
+    TaskHistoryViewSet,
+    UserListApi,
+    UserCreateView,
+    UserLoginView,
+)
 
 from rest_framework.routers import SimpleRouter
 
@@ -25,5 +32,8 @@ router.register("api/tasks", TaskViewSet)
 router.register("api/task-history", TaskHistoryViewSet)
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("user/signup/", UserCreateView.as_view()),
+    path("user/login/", UserLoginView.as_view()),
+    path("api/user", UserListApi.as_view({"get": "list"})),
     path("tasksapi/", TaskListAPI.as_view()),
 ] + router.urls

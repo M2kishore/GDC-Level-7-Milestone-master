@@ -5,15 +5,16 @@ from django.views import View
 from django.contrib.auth.models import User
 
 from django.http.response import JsonResponse
-
+from django.contrib.auth.views import LoginView
 from tasks.models import Task, TaskHistory
-
+from django.views.generic.edit import CreateView
+from django.contrib.auth.forms import UserCreationForm
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from django_filters.rest_framework import (
     DjangoFilterBackend,
     FilterSet,
@@ -35,7 +36,10 @@ STATUS_CHOICES = (
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "username"]
+        fields = ["first_name", "last_name", "username", "password"]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class TaskSerializer(ModelSerializer):
@@ -68,10 +72,21 @@ class TaskHistoryFilter(FilterSet):
     status = ChoiceFilter(choices=STATUS_CHOICES)
 
 
+class UserLoginView(LoginView):
+    template_name = "user_login.html"
+
+
+class UserCreateView(CreateView):
+    form_class = UserCreationForm
+    template_name = "user_create.html"
+    success_url = "/user/login"
+
+
 class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = (IsAuthenticated,)
 
     filter_backends = (DjangoFilterBackend,)
@@ -100,6 +115,20 @@ class TaskHistoryViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class UserListApi(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        content = {
+            "user": str(request.user),  # `django.contrib.auth.User` instance.
+            "auth": str(request.auth),  # None
+        }
+        return Response(content)
 
 
 class TaskListAPI(APIView):
