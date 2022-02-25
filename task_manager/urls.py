@@ -20,7 +20,6 @@ from tasks.apiViews import (
     TaskListAPI,
     TaskViewSet,
     TaskHistoryViewSet,
-    UserListApi,
     UserCreateView,
     UserLoginView,
 )
@@ -34,6 +33,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("user/signup/", UserCreateView.as_view()),
     path("user/login/", UserLoginView.as_view()),
-    path("api/user", UserListApi.as_view({"get": "list"})),
     path("tasksapi/", TaskListAPI.as_view()),
 ] + router.urls

@@ -48,7 +48,7 @@ class TaskSerializer(ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ["title", "description", "completed", "status", "user"]
+        fields = ["id", "title", "description", "completed", "status", "user"]
 
 
 class TaskHistorySerializer(ModelSerializer):
@@ -100,7 +100,9 @@ class TaskViewSet(ModelViewSet):
 
     def perform_update(self, serializer):
         task = self.get_object()
-        TaskHistory.objects.create(task=task, status=task.status)
+        database_task = Task.objects.filter(id=task.id)
+        if not (database_task.status == task.status):
+            TaskHistory.objects.create(task=task, status=task.status)
         serializer.save(user=self.request.user)
 
 
@@ -115,20 +117,6 @@ class TaskHistoryViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-
-class UserListApi(ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    # permission_classes = [IsAuthenticated]
-
-    def get(self, request, format=None):
-        content = {
-            "user": str(request.user),  # `django.contrib.auth.User` instance.
-            "auth": str(request.auth),  # None
-        }
-        return Response(content)
 
 
 class TaskListAPI(APIView):
