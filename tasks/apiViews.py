@@ -104,8 +104,7 @@ class TaskViewSet(ModelViewSet):
 
     def perform_update(self, serializer):
         task = self.get_object()
-        database_task = Task.objects.filter(id=task.id)
-        if not (database_task.status == task.status):
+        if serializer.validated_data["status"] != task.status:
             TaskHistory.objects.create(task=task, status=task.status)
         serializer.save(user=self.request.user)
 
