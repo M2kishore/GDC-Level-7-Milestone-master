@@ -28,12 +28,6 @@ class Task(models.Model):
 class TaskHistory(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=True)
     update_time = models.DateTimeField(auto_now=True)
-    status = status = models.CharField(
+    status = models.CharField(
         max_length=100, choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0]
     )
-
-    def save(self, *args, **kwargs):
-        return
-
-    def delete(self, *args, **kwargs):
-        return
