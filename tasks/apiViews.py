@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from django_filters.rest_framework import (
     DjangoFilterBackend,
@@ -58,11 +59,6 @@ class TaskHistorySerializer(ModelSerializer):
     class Meta:
         model = TaskHistory
         fields = ["task", "update_time", "status"]
-        read_only_fields = ["task", "update_time", "status"]
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            setattr(self.Meta, "read_only_fields", [*self.fields])
 
 
 class TaskFilter(FilterSet):
@@ -109,7 +105,7 @@ class TaskViewSet(ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class TaskHistoryViewSet(ModelViewSet):
+class TaskHistoryViewSet(ReadOnlyModelViewSet):
     queryset = TaskHistory.objects.all()
     serializer_class = TaskHistorySerializer
 
