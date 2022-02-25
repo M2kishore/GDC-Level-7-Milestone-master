@@ -31,3 +31,9 @@ class TaskHistory(models.Model):
     status = status = models.CharField(
         max_length=100, choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0]
     )
+
+    def save(self, *args, **kwargs):
+        return
+
+    def delete(self, *args, **kwargs):
+        return
