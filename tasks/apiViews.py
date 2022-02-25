@@ -114,6 +114,9 @@ class TaskHistoryViewSet(ReadOnlyModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TaskHistoryFilter
 
+    def get_queryset(self):
+        return TaskHistory.objects.filter(task__user=self.request.user)
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
