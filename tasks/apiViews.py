@@ -60,6 +60,10 @@ class TaskHistorySerializer(ModelSerializer):
         fields = ["task", "update_time", "status"]
         read_only_fields = ["task", "update_time", "status"]
 
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            setattr(self.Meta, "read_only_fields", [*self.fields])
+
 
 class TaskFilter(FilterSet):
     title = CharFilter(lookup_expr="icontains")
